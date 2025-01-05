@@ -1,5 +1,7 @@
-const puppeteer = require("puppeteer");
 import type { MovieDataType } from "./types/moviesData";
+const puppeteer = require("puppeteer");
+const fs = require("fs");
+const path = require("path");
 
 const getAllMoviesNames = async (city: string) => {
   try {
@@ -80,6 +82,11 @@ const autoRedirectFuc = async (searchMovie: MovieDataType) => {
     });
     const page = await browser.newPage();
 
+    // Resize the window (Set the viewport size)
+
+    await page.setViewport({ width: 1280, height: 800 });
+    console.log(`Viewport set to 1280x800`);
+
     console.log("Setting headers and user-agent...");
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -112,8 +119,18 @@ const autoRedirectFuc = async (searchMovie: MovieDataType) => {
       console.log("No cookie banner found.");
     }
 
-    // Take a screenshot
-    const screenshotPath = `screenshot_${name}_${id}.png`;
+    const screenshotsDir = path.join(__dirname, "/screenShort");
+
+    if (!fs.existsSync(screenshotsDir)) {
+      fs.mkdirSync(screenshotsDir);
+      console.log("Created 'screenshots' directory.");
+    }
+
+    // Save the screenshot in the 'screenshots' folder
+    const screenshotPath = path.join(
+      screenshotsDir,
+      `screenshot_${name}_${id}_${new Date().getTime()}.png`
+    );
     console.log("Taking a screenshot...");
     await page.screenshot({ path: screenshotPath });
     console.log(`Screenshot saved at ${screenshotPath}`);
