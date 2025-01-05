@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        #music-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .track {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: 500px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        .track img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .track audio {
+            margin-top: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Music Player</h1>
+    <div id="music-container"></div>
+
+    <script>
+        const renderMusic = async () => {
+            // Replace with real data
+            const tracks = [
+                {
+                    uri: "spotify:track:4XcXYNz7vY1XlT3RABUteW",
+                    id: "4XcXYNz7vY1XlT3RABUteW",
+                    name: "The King of Milele",
+                    albumOfTrack: {
+                        uri: "spotify:album:4syrI3dMJVRPzPijFjqBbF",
+                        name: "Mufasa: The Lion King (Original Score)",
+                        coverArt: {
+                            sources: [
+                                {
+                                    url: "https://i.scdn.co/image/ab67616d00001e021f418b1fd50c186d98b368ae",
+                                    width: 300,
+                                    height: 300
+                                },
+                                {
+                                    url: "https://i.scdn.co/image/ab67616d000048511f418b1fd50c186d98b368ae",
+                                    width: 64,
+                                    height: 64
+                                },
+                                {
+                                    url: "https://i.scdn.co/image/ab67616d0000b2731f418b1fd50c186d98b368ae",
+                                    width: 640,
+                                    height: 640
+                                }
+                            ]
+                        },
+                        sharingInfo: {
+                            shareUrl: "https://open.spotify.com/album/4syrI3dMJVRPzPijFjqBbF?si=R64D3AnwRR653cPpSeM9yw"
+                        }
+                    },
+                    artists: {
+                        items: [
+                            {
+                                uri: "spotify:artist:4xYAJbccuTDFnsuA4FzCSr",
+                                profile: {
+                                    name: "Dave Metzger"
+                                }
+                            },
+                            {
+                                uri: "spotify:artist:3xvaSlT4xsyk6lY1ESOspO",
+                                profile: {
+                                    name: "Disney"
+                                }
+                            }
+                        ]
+                    },
+                    contentRating: {
+                        label: "NONE"
+                    },
+                    duration: {
+                        totalMilliseconds: 143346
+                    },
+                    playability: {
+                        playable: true
+                    },
+                    preview_url: "https://p.scdn.co/mp3-preview/eb602d1e1ac6fc9d84703d5f3f6f0d7f6cfa0aeb?cid=774b29d4f13844c495f206cafdad9c86" // Sample preview URL
+                }
+            ];
+
+            if (tracks && tracks.length > 0) {
+                const container = document.getElementById('music-container');
+                container.innerHTML = ''; // Clear previous results
+
+                tracks.forEach((track, index) => {
+                    console.log('➡ ~ tracks.forEach ~ track:', track);
+
+                    // Get album cover, artist name, and preview URL (if available)
+                    const albumCover = track.albumOfTrack?.coverArt?.sources?.[2]?.url || 'placeholder.jpg'; // Highest resolution image
+                    const artistNames = track.artists?.items?.map(artist => artist.profile?.name).join(', ') || 'Unknown Artist';
+                    const trackPreview = track.preview_url || null; // Use the track preview URL if available
+
+                    if (trackPreview) { // Only render tracks with preview URLs
+                        const trackElement = document.createElement('div');
+                        trackElement.classList.add('track');
+
+                        const trackInfo = `
+                            <img src="${albumCover}" alt="${artistNames}" />
+                            <p>${track.name} by ${artistNames}</p>
+                            <audio controls>
+                                <source src="${trackPreview}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        `;
+
+                        trackElement.innerHTML = trackInfo;
+                        container.appendChild(trackElement);
+                    } else {
+                        console.warn(`Track ${index} does not have a preview URL.`);
+                    }
+                });
+            } else {
+                console.log('No tracks found.');
+                const container = document.getElementById('music-container');
+                container.innerHTML = '<p>No tracks found for your query.</p>';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', renderMusic);
+    </script>
+</body>
+
+</html>
