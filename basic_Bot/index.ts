@@ -1,7 +1,8 @@
-import type { MovieDataType } from "./types/moviesData";
+import type { MovieDataType, UserQueryPayloadType } from "./types/moviesData";
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { format } = require("date-fns");
 
 const getAllMoviesNames = async (city: string) => {
   try {
@@ -97,15 +98,7 @@ const autoRedirectFuc = async (searchMovie: MovieDataType) => {
     });
 
     // URL to navigate
-    console.log(`Navigating to ${href}...`);
-
-    // Debugging reDirections
-    // page.on("response", (response) => {
-    //   console.log(
-    //     `Response - Status: ${response.status()}, URL: ${response.url()}`
-    //   );
-    // });
-
+    console.log(`Navigating to`);
     await page.goto(href, { waitUntil: "networkidle2" });
 
     // Accept cookies if prompted
@@ -129,7 +122,10 @@ const autoRedirectFuc = async (searchMovie: MovieDataType) => {
     // Save the screenshot in the 'screenshots' folder
     const screenshotPath = path.join(
       screenshotsDir,
-      `screenshot_${name}_${id}_${new Date().getTime()}.png`
+      `screenshot_${name}_${id}_${new Date().getTime()}_${format(
+        new Date(),
+        "dd_MM_yyyy"
+      )}.png`
     );
     console.log("Taking a screenshot...");
     await page.screenshot({ path: screenshotPath });
@@ -166,7 +162,6 @@ const createUrl = async ({
         movie.href.includes(cityName?.toLowerCase().trim())
       );
     });
-    console.log("➡ ~ createUrl ~ allMovies:", allMovies);
     return findMovie;
   } catch (error: unknown) {
     // Type Guard to check if the error is an instance of Error
@@ -184,7 +179,12 @@ const createUrl = async ({
 
 (async () => {
   try {
-    const queryObject = { movieName: "khadaan", cityName: "kolkata" };
+    const queryObject: UserQueryPayloadType = {
+      movieName: "game changer",
+      cityName: "surat",
+      language: "hindi",
+      screenType: "2d",
+    };
     const searchMovie = await createUrl(queryObject);
     console.log("➡ ~ searchMovie:", searchMovie);
     await autoRedirectFuc(searchMovie);

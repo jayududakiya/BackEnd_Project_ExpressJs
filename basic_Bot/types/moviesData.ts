@@ -6,4 +6,14 @@ type MovieDataType = {
   id: string | null;
 };
 
-export type { MovieDataType };
+type UserQueryPayloadType = {
+  movieName: string;
+  cityName: string;
+  date?: string;
+  time?: string;
+  setNumber?: number;
+  language?: string;
+  screenType?: string;
+};
+
+export type { MovieDataType, UserQueryPayloadType };
