@@ -131,6 +131,23 @@ const autoRedirectFuc = async (searchMovie: MovieDataType) => {
     await page.screenshot({ path: screenshotPath });
     console.log(`Screenshot saved at ${screenshotPath}`);
 
+    // Extract the current page URL
+    const currentUrl = page.url();
+
+    const fbPixelBaseUrl = "https://www.facebook.com/tr/";
+    // Construct the Facebook Pixel tracking URL
+    const fbPixelUrl = `${fbPixelBaseUrl}?id=895788993886590&ev=SubscribedButtonClick&dl=${encodeURIComponent(
+      currentUrl
+    )}&rl=${encodeURIComponent(
+      currentUrl
+    )}&if=false&ts=${Date.now()}&cd[buttonText]=Book%20tickets&sw=1536&sh=864&v=2.9.179&r=stable&ec=2&o=4126&fbp=fb.1.1736063807103.526608478763752515&ler=empty&cdl=API_unavailable&it=${Date.now()}&coo=false&es=automatic&tm=3&rqm=GET`;
+
+    // Log the tracking URL
+    console.log("fbPixelUrl", fbPixelUrl);
+
+    const parsedUrl = new URL(fbPixelUrl);
+    console.log("parsedUrl:", parsedUrl);
+
     // Close the browser
     await browser.close();
     console.log("Browser closed.");
